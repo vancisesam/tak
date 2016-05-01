@@ -22,11 +22,23 @@ public class GameManager : MonoBehaviour {
     {
         if (selected != null)
         {
-            float toHereHeight = toHere.GetComponent<Renderer>().bounds.size.y/2.0f;
-            float selectedHeight = selected.GetComponent<Renderer>().bounds.size.y/2.0f;
-            selected.transform.position = toHere.transform.position + new Vector3(0, toHereHeight + selectedHeight, 0);
-            selected.transform.SetParent(toHere.transform);
-            
+            DragPiece temp = selected.GetComponent<DragPiece>();
+            if (toHere.transform.childCount == 0)
+            {
+                float toHereHeight = toHere.GetComponent<Renderer>().bounds.size.y / 2.0f;
+                float selectedHeight = selected.GetComponent<Renderer>().bounds.size.y / 2.0f;
+                selected.transform.position = toHere.transform.position + new Vector3(0, toHereHeight + selectedHeight, 0);
+                selected.transform.SetParent(toHere.transform);
+                temp.inStack = false;
+            }
+            if (toHere.GetComponent<DragPiece>() != null)
+            {
+                if (toHere.GetComponent<DragPiece>().inStack)
+                {
+                   selected.transform.SetParent(temp.pieceHolder);
+                   temp.inStack = true;
+                }
+            }
             deselectPiece();
         }
     }
