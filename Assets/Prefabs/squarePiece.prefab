@@ -14,7 +14,7 @@ GameObject:
   - 65: {fileID: 6536972}
   m_Layer: 0
   m_Name: squarePiece
-  m_TagString: Untagged
+  m_TagString: squarePiece
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,9 +87,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aaa77c71b13bbe408b306b000c44607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inStack: 0
   gameManager: {fileID: 0}
   pieceHolder: {fileID: 0}
+  inStack: 0
+  isMovable: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -5,9 +5,13 @@ using System;
 
 public class DragPiece : MonoBehaviour
 {
-    public bool inStack;
+    
     public GameManager gameManager;
     public Transform pieceHolder;
+
+
+    public bool inStack;    //if a piece is off the board, waiting to be played
+    public bool isMovable;
     // Use this for initialization
     void Start()
     {
@@ -17,7 +21,9 @@ public class DragPiece : MonoBehaviour
 
     void OnMouseDown()
     {
+        
         gameManager.selectPiece(gameObject);
+        
     }
 
 

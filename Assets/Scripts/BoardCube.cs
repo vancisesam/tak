@@ -18,15 +18,6 @@ public class BoardCube : MonoBehaviour
 
     void OnMouseDown()
     {
-        gameManager.movePiece(gameObject);
-    }
-    
-    void OnMouseEnter()
-    {
-        //print("hi");
-    }
-    void OnMouseExit()
-    {
-        //print("bye");
+        gameManager.moveSelectedPieceTo(gameObject);
     }
 }

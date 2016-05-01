@@ -15,12 +15,12 @@ public class CameraMovement : MonoBehaviour {
     void Update()
     {
 
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.D))
         {
 
             transform.Rotate(Vector3.up * Time.deltaTime*-speed);
         }
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
         {
             transform.Rotate(Vector3.up * Time.deltaTime * speed);
         }
