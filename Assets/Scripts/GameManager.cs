@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour {
     public Material selectedMaterial;
     private Material materialOfSelected;
 
+    public enum direction { vertical, horizontal, neither};
+    public direction currentDirection = direction.neither;
+
     public enum turn { round, square};
     public turn currentTurn=turn.round;
     GameObject[] playersPieces;
@@ -102,10 +105,38 @@ public class GameManager : MonoBehaviour {
             return true;   
         }
         
-        if (toHere.transform.position.x == selected.transform.position.x ^ toHere.transform.position.z == selected.transform.position.z)
+        else if(toHere.transform.position.x == selected.transform.position.x)
         {
-            Debug.Log("target and piece are in the same row or column");
-            return true;
+            if (toHere.transform.position.z == selected.transform.position.z)   //the target and the selected are in the same position
+            {
+                Debug.Log("Cannot Move to the same position");
+                return false;
+            }
+            else if (currentDirection == direction.horizontal)
+            {
+                Debug.Log("You can only move horizontally");
+                return false;
+            }
+            else if (toHere.transform.position.z == selected.transform.position.z +1.0f || toHere.transform.position.z == selected.transform.position.z - 1.0f)
+            {
+                currentDirection = direction.vertical;
+                return true;
+            }
+            return false;
+        }
+        else if (toHere.transform.position.z == selected.transform.position.z)
+        {
+            if(currentDirection == direction.vertical)
+            {
+                Debug.Log("You can only move vertically");
+                return false;
+            }
+            else if (toHere.transform.position.x == selected.transform.position.x + 1.0f || toHere.transform.position.x == selected.transform.position.x - 1.0f)
+            {
+                currentDirection = direction.horizontal;
+                return true;
+            }
+            return false;
         }
         return false;
     }
@@ -122,6 +153,7 @@ public class GameManager : MonoBehaviour {
 
     public void nextTurn()
     {
+        currentDirection = direction.neither;
         if(currentTurn == turn.round)
         {
             currentTurn = turn.square;
