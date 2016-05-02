@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour {
 
@@ -20,10 +21,10 @@ public class GameManager : MonoBehaviour {
     DragPiece[] roundData;
     // Use this for initialization
     void Start () {
-        roundPieces = GameObject.FindGameObjectsWithTag("roundPiece");
+        roundPieces  = GameObject.FindGameObjectsWithTag("roundPiece");
         squarePieces = GameObject.FindGameObjectsWithTag("squarePiece");
         int i = 0;
-        roundData = new DragPiece[roundPieces.Length];
+        roundData  = new DragPiece[roundPieces.Length];
         squareData = new DragPiece[squarePieces.Length];
         foreach (GameObject piece in roundPieces)
         {
@@ -42,10 +43,13 @@ public class GameManager : MonoBehaviour {
 
     public void moveSelectedPieceTo(GameObject toHere)
     {
+        
+
         if (selected != null)       //if I have a piece selected
         {
+            Undo.RecordObject(selected, "Undomove");
             DragPiece temp = selected.GetComponent<DragPiece>();
-
+            
             if (toHere.transform.childCount == 0 && isEligibleTarget(toHere))   //if there isn't already a piece on top of toHere and is a valid placement
             {
                 //set the position on top of toHere, and set the selected piece to be the child of toHere
@@ -59,11 +63,12 @@ public class GameManager : MonoBehaviour {
 
                 markStackMovableUp(selected.transform);
             }
-            if (toHere.GetComponent<DragPiece>() != null)       //if the toHere is another Piece
-            {
-                if (toHere.GetComponent<DragPiece>().inStack)   //if toHere is in the stack
+
+            if (toHere.GetComponent<DragPiece>() != null)            //if the toHere is another Piece
+            {                                                        
+                if (toHere.GetComponent<DragPiece>().inStack)        //if toHere is in the stack
                 {
-                   selected.transform.SetParent(temp.pieceHolder);      //set back into the stack
+                   selected.transform.SetParent(temp.pieceHolder);   //set back into the stack
                    temp.inStack = true;
                 }
             }
@@ -93,6 +98,7 @@ public class GameManager : MonoBehaviour {
                 deselectPiece();
             }
         }
+
         else if (selected == null)
         {
             if (piece.GetComponent<DragPiece>().isMovable)
@@ -102,12 +108,13 @@ public class GameManager : MonoBehaviour {
                 selected.GetComponent<MeshRenderer>().material = selectedMaterial;
             }
         }
+
         else
         {
             moveSelectedPieceTo(piece);
-        }
-        
+        }        
     }
+
     bool isEligibleTarget(GameObject toHere)
     {
         Vector3 targetPos = toHere.transform.position;
@@ -181,7 +188,7 @@ public class GameManager : MonoBehaviour {
 
 
 
-    public void nextTurn()
+    public void nextTurn() // proceeds to the next players turn
     {
         currentDirection = direction.neither;
         if(currentTurn == turn.round)
@@ -197,6 +204,14 @@ public class GameManager : MonoBehaviour {
             markMovable();
         }
     }
+
+    public void undomove(GameObject toHere) 
+    {
+        
+      
+        
+    }
+    
     void markMovable()
     {
         
