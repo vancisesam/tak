@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour {
             if (toHere.transform.childCount == 0 && isEligibleTarget(toHere))   //if there isn't already a piece on top of toHere and is a valid placement
             {
                 //set the position on top of toHere, and set the selected piece to be the child of toHere
-                float toHereHeight = toHere.GetComponent<Renderer>().bounds.size.y / 2.0f;  
+                float toHereHeight = toHere.GetComponent<Renderer>().bounds.size.y / 2.0f;
                 float selectedHeight = selected.GetComponent<Renderer>().bounds.size.y / 2.0f;
                 selected.transform.position = toHere.transform.position + new Vector3(0, toHereHeight + selectedHeight, 0);
                 selected.transform.SetParent(toHere.transform);
@@ -75,7 +75,23 @@ public class GameManager : MonoBehaviour {
     {
         if (selected == piece)
         {
-            deselectPiece();
+            DragPiece selectedData = selected.GetComponent<DragPiece>();
+            if (selectedData.inStack)
+            {
+                if (selectedData.isWall)
+                {
+                    selectedData.crushWall();
+                    deselectPiece();
+                }
+                else
+                {
+                    selectedData.makeWall();
+                }
+            }
+            else
+            {
+                deselectPiece();
+            }
         }
         else if (selected == null)
         {
@@ -94,18 +110,28 @@ public class GameManager : MonoBehaviour {
     }
     bool isEligibleTarget(GameObject toHere)
     {
+        Vector3 targetPos = toHere.transform.position;
+        Vector3 selectedPos = selected.transform.position;
         Debug.Log("checking eligiblity");
-        if(selected.GetComponent<DragPiece>().inStack) {
+        if (toHere.tag != "boardSquare")
+        { //check if you are moving onto another piece
+            if (toHere.GetComponent<DragPiece>().isWall)   //cannot move onto a wall
+            {
+                Debug.Log("cannot move onto a wall");
+                return false;
+            }
+        }
+        if (selected.GetComponent<DragPiece>().inStack) {
             Debug.Log("selected is from stack");
-            if(toHere.tag != "boardSquare")
+            if (toHere.tag != "boardSquare")
             {
                 Debug.Log("moving from stack to piece is not allowed");
                 return false;   //a move from the stack to another piece is not allowed
             }
-            return true;   
+            return true;
         }
         
-        else if(toHere.transform.position.x == selected.transform.position.x)
+        else if (toHere.transform.position.x == selected.transform.position.x)
         {
             if (toHere.transform.position.z == selected.transform.position.z)   //the target and the selected are in the same position
             {
@@ -117,16 +143,17 @@ public class GameManager : MonoBehaviour {
                 Debug.Log("You can only move horizontally");
                 return false;
             }
-            else if (toHere.transform.position.z == selected.transform.position.z +1.0f || toHere.transform.position.z == selected.transform.position.z - 1.0f)
+            else if (toHere.transform.position.z == selected.transform.position.z + 1.0f || toHere.transform.position.z == selected.transform.position.z - 1.0f)
             {
                 currentDirection = direction.vertical;
                 return true;
             }
+            Debug.Log("can only move one square at a time");
             return false;
         }
         else if (toHere.transform.position.z == selected.transform.position.z)
         {
-            if(currentDirection == direction.vertical)
+            if (currentDirection == direction.vertical)
             {
                 Debug.Log("You can only move vertically");
                 return false;
@@ -136,8 +163,11 @@ public class GameManager : MonoBehaviour {
                 currentDirection = direction.horizontal;
                 return true;
             }
+            Debug.Log("can only move one square at a time");
             return false;
+
         }
+        Debug.Log("cannot move diagonally");
         return false;
     }
     public void deselectPiece()
