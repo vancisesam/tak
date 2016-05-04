@@ -13,6 +13,7 @@ public class DragPiece : MonoBehaviour
     public bool inStack;    //if a piece is off the board, waiting to be played
     public bool isMovable;
     public bool isWall = false;
+    public bool isCap = false;
 
     public float deltaHeight = 0;
     private float myHeight;
@@ -40,10 +41,14 @@ public class DragPiece : MonoBehaviour
     }
     public void crushWall()
     {
+        Transform currentParent = transform.parent;
+        transform.parent = null;
         isWall = false;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
         transform.position += new Vector3(0, -deltaHeight);
         deltaHeight = 0.0f;
-        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.parent = currentParent;
+        
 
     }
 

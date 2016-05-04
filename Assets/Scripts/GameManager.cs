@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour {
     private Material materialOfSelected;
 
     public enum direction { vertical, horizontal, neither};
+    private enum directionSign { positive, negative, neither};
     public direction currentDirection = direction.neither;
+    private directionSign currentDirectionSign;
 
     public enum turn { round, square};
     public turn currentTurn=turn.round;
@@ -81,7 +83,7 @@ public class GameManager : MonoBehaviour {
         if (selected == piece)
         {
             DragPiece selectedData = selected.GetComponent<DragPiece>();
-            if (selectedData.inStack)
+            if (selectedData.inStack && !selectedData.isCap)
             {
                 if (selectedData.isWall)
                 {
@@ -122,8 +124,21 @@ public class GameManager : MonoBehaviour {
         Debug.Log("checking eligiblity");
         if (toHere.tag != "boardSquare")
         { //check if you are moving onto another piece
-            if (toHere.GetComponent<DragPiece>().isWall)   //cannot move onto a wall
+            DragPiece toHereData = toHere.GetComponent<DragPiece>();
+            if (toHereData.isCap)
             {
+                Debug.Log("cannot move onto a capStone");
+                return false;
+            }
+            else if (toHereData.isWall)   //cannot move onto a wall
+            {
+                if (selected.GetComponent<DragPiece>().isCap)
+                {
+                    toHereData.crushWall();
+                    
+                    
+                    return true;
+                }
                 Debug.Log("cannot move onto a wall");
                 return false;
             }
@@ -138,9 +153,9 @@ public class GameManager : MonoBehaviour {
             return true;
         }
         
-        else if (toHere.transform.position.x == selected.transform.position.x)
+        else if (targetPos.x == selectedPos.x)
         {
-            if (toHere.transform.position.z == selected.transform.position.z)   //the target and the selected are in the same position
+            if (targetPos.z == selectedPos.z)   //the target and the selected are in the same position
             {
                 Debug.Log("Cannot Move to the same position");
                 return false;
@@ -150,25 +165,44 @@ public class GameManager : MonoBehaviour {
                 Debug.Log("You can only move horizontally");
                 return false;
             }
-            else if (toHere.transform.position.z == selected.transform.position.z + 1.0f || toHere.transform.position.z == selected.transform.position.z - 1.0f)
+            else if (targetPos.z == selectedPos.z + 1.0f || targetPos.z == selectedPos.z - 1.0f)
             {
-                currentDirection = direction.vertical;
-                return true;
+                switch (currentDirectionSign)
+                {
+                    case directionSign.neither:
+                        currentDirectionSign = (targetPos.z == selectedPos.z + 1.0f) ? directionSign.positive : directionSign.negative;
+                        currentDirection = direction.vertical;
+                        return true;
+                    case directionSign.negative:
+                        return (targetPos.z == selectedPos.z - 1.0f);
+                    case directionSign.positive:
+                        return (targetPos.z == selectedPos.z + 1.0f);
+                }               
+                
             }
             Debug.Log("can only move one square at a time");
             return false;
         }
-        else if (toHere.transform.position.z == selected.transform.position.z)
+        else if (targetPos.z == selectedPos.z)
         {
             if (currentDirection == direction.vertical)
             {
                 Debug.Log("You can only move vertically");
                 return false;
             }
-            else if (toHere.transform.position.x == selected.transform.position.x + 1.0f || toHere.transform.position.x == selected.transform.position.x - 1.0f)
+            else if (targetPos.x == selectedPos.x + 1.0f || targetPos.x == selectedPos.x - 1.0f)
             {
-                currentDirection = direction.horizontal;
-                return true;
+                switch (currentDirectionSign)
+                {
+                    case directionSign.neither:
+                        currentDirectionSign = (targetPos.x == selectedPos.x + 1.0f) ? directionSign.positive : directionSign.negative;
+                        currentDirection = direction.horizontal;
+                        return true;
+                    case directionSign.negative:
+                        return (targetPos.x == selectedPos.x - 1.0f);
+                    case directionSign.positive:
+                        return (targetPos.x == selectedPos.x + 1.0f);
+                }
             }
             Debug.Log("can only move one square at a time");
             return false;
@@ -181,6 +215,11 @@ public class GameManager : MonoBehaviour {
     {
         if(selected != null)
         {
+            DragPiece selectedData = selected.GetComponent<DragPiece>();
+            if (selectedData.inStack)
+            {
+                selectedData.crushWall();
+            }
             selected.GetComponent<MeshRenderer>().material = materialOfSelected;
             selected = null;
         }
@@ -191,6 +230,8 @@ public class GameManager : MonoBehaviour {
     public void nextTurn() // proceeds to the next players turn
     {
         currentDirection = direction.neither;
+        currentDirectionSign = directionSign.neither;
+        allPiecesNonMovable();
         if(currentTurn == turn.round)
         {
             currentTurn = turn.square;
