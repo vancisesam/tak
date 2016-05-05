@@ -57,8 +57,10 @@ public class GameManager : MonoBehaviour {
                 //set the position on top of toHere, and set the selected piece to be the child of toHere
                 float toHereHeight = toHere.GetComponent<Renderer>().bounds.size.y / 2.0f;
                 float selectedHeight = selected.GetComponent<Renderer>().bounds.size.y / 2.0f;
+                
                 selected.transform.position = toHere.transform.position + new Vector3(0, toHereHeight + selectedHeight, 0);
                 selected.transform.SetParent(toHere.transform);
+                selected.transform.localPosition = new Vector3(0.0f, selected.transform.localPosition.y, 0.0f);
                 temp.inStack = false;
                 //no pieces should be movable except those above;
                 allPiecesNonMovable();
