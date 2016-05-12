@@ -8,7 +8,7 @@ public class BoardCube : MonoBehaviour
     public GameManager gameManager;
     // Use this for initialization
     void Start () {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        //gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 	}
 	
 	// Update is called once per frame
@@ -18,6 +18,10 @@ public class BoardCube : MonoBehaviour
 
     void OnMouseDown()
     {
+        if(gameManager = null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        }
         gameManager.moveSelectedPieceTo(gameObject);
     }
 }

@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &105378
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 499662}
+  - 114: {fileID: 11493776}
+  - 114: {fileID: 11426328}
+  m_Layer: 0
+  m_Name: RoundPieceHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &499662
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 105378}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11426328
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 105378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 88
+    i1: 186
+    i2: 116
+    i3: 47
+    i4: 30
+    i5: 86
+    i6: 241
+    i7: 4
+    i8: 202
+    i9: 243
+    i10: 87
+    i11: 73
+    i12: 202
+    i13: 35
+    i14: 113
+    i15: 228
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 1
+--- !u!114 &11493776
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 105378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c648ac9f63d2e6e49ba71ef69ae54245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roundPiece: {fileID: 107854, guid: 6634ad59b7772284686c3049e69b5132, type: 2}
+  roundCapStonePiece: {fileID: 113496, guid: 020fa2637207990418e027977852632e, type: 2}
+  squarePiece: {fileID: 136164, guid: ed841cc7fe3345442899aa8baff25964, type: 2}
+  squareCapStonePiece: {fileID: 184602, guid: d41fa6aeab64080488b4eff457094767, type: 2}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 105378}
+  m_IsPrefabParent: 1

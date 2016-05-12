@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
-using UnityEditor;
+//using UnityEditor;
+using UnityEngine.Networking;
 
-public class GameManager : MonoBehaviour {
+
+public class GameManager : NetworkBehaviour {
 
     private GameObject selected = null;
     public Material selectedMaterial;
@@ -15,18 +17,26 @@ public class GameManager : MonoBehaviour {
     private directionSign currentDirectionSign;
 
     public enum turn { round, square};
-    public turn currentTurn=turn.round;
+    
     GameObject[] playersPieces;
     GameObject[] squarePieces;
     GameObject[] roundPieces;
     DragPiece[] squareData;
     DragPiece[] roundData;
     // Use this for initialization
+
+    [SyncVar(hook = "nextTurn")]
+    public turn currentTurn = turn.round;
     void Start () {
-        roundPieces  = GameObject.FindGameObjectsWithTag("roundPiece");
+        findPieces();
+    }
+	
+    public void findPieces()
+    {
+        roundPieces = GameObject.FindGameObjectsWithTag("roundPiece");
         squarePieces = GameObject.FindGameObjectsWithTag("squarePiece");
         int i = 0;
-        roundData  = new DragPiece[roundPieces.Length];
+        roundData = new DragPiece[roundPieces.Length];
         squareData = new DragPiece[squarePieces.Length];
         foreach (GameObject piece in roundPieces)
         {
@@ -35,12 +45,9 @@ public class GameManager : MonoBehaviour {
             i++;
         }
     }
-	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonDown(0)){
-            //deselectPiece();
-        }
+        
 	}
 
     public void moveSelectedPieceTo(GameObject toHere)
@@ -49,7 +56,7 @@ public class GameManager : MonoBehaviour {
 
         if (selected != null)       //if I have a piece selected
         {
-            Undo.RecordObject(selected, "Undomove");
+            //Undo.RecordObject(selected, "Undomove");
             DragPiece temp = selected.GetComponent<DragPiece>();
             
             if (toHere.transform.childCount == 0 && isEligibleTarget(toHere))   //if there isn't already a piece on top of toHere and is a valid placement
@@ -82,6 +89,7 @@ public class GameManager : MonoBehaviour {
 
     public void selectPiece(GameObject piece)
     {
+        Debug.Log("clicky");
         if (selected == piece)
         {
             DragPiece selectedData = selected.GetComponent<DragPiece>();
@@ -227,10 +235,27 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-
-
-    public void nextTurn() // proceeds to the next players turn
+    public void change()
     {
+        Debug.Log("change called");
+        if (currentTurn == turn.round)
+        {
+            currentTurn = turn.square;
+            Debug.Log(currentTurn);
+        }
+        else if (currentTurn == turn.square)
+        {
+            currentTurn = turn.round;
+            Debug.Log(currentTurn);
+        }
+    }
+    //[Command]
+    public void nextTurn(turn currentTurn) // proceeds to the next players turn
+    {
+        Debug.Log("next turn called");
+        if(playersPieces == null) {
+            findPieces();
+        }
         currentDirection = direction.neither;
         currentDirectionSign = directionSign.neither;
         allPiecesNonMovable();
@@ -257,7 +282,7 @@ public class GameManager : MonoBehaviour {
     
     void markMovable()
     {
-        
+        Debug.Log("marking");
         foreach(GameObject piece in playersPieces)
         {
             DragPiece thisPiece = piece.GetComponent<DragPiece>();

@@ -2,8 +2,9 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.Networking;
 
-public class DragPiece : MonoBehaviour
+public class DragPiece : NetworkBehaviour
 {
     
     public GameManager gameManager;
@@ -27,7 +28,7 @@ public class DragPiece : MonoBehaviour
 
     void OnMouseDown()
     {
-        
+          
         gameManager.selectPiece(gameObject);
         
     }
