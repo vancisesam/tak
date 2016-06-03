@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Linq;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
     private GameObject selected = null;
     public Material selectedMaterial;
     private Material materialOfSelected;
+    public GameObject turnText;
 
     public enum direction { vertical, horizontal, neither};
     private enum directionSign { positive, negative, neither};
@@ -35,13 +37,6 @@ public class GameManager : MonoBehaviour {
             i++;
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.GetMouseButtonDown(0)){
-            //deselectPiece();
-        }
-	}
 
     public void moveSelectedPieceTo(GameObject toHere)
     {
@@ -237,12 +232,14 @@ public class GameManager : MonoBehaviour {
         if(currentTurn == turn.round)
         {
             currentTurn = turn.square;
+            turnText.GetComponent<Text>().text = "Square Turn";
             playersPieces = roundPieces;
             markMovable();
         }
         else if(currentTurn == turn.square)
         {
             currentTurn = turn.round;
+            turnText.GetComponent<Text>().text = "Round Turn";
             playersPieces = squarePieces;
             markMovable();
         }
