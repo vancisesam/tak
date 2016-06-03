@@ -89,6 +89,7 @@ public class GameManager : NetworkBehaviour {
 
     public void selectPiece(GameObject piece)
     {
+        
         Debug.Log("clicky");
         if (selected == piece)
         {
@@ -237,6 +238,14 @@ public class GameManager : NetworkBehaviour {
 
     public void change()
     {
+        //should also call next turn (because change is only called on client)
+        Debug.Log("button clicked");
+        CmdChange();
+        //nextTurn(currentTurn);
+    }
+    [Command]
+    public void CmdChange()
+    {
         Debug.Log("change called");
         if (currentTurn == turn.round)
         {
@@ -249,13 +258,10 @@ public class GameManager : NetworkBehaviour {
             Debug.Log(currentTurn);
         }
     }
-    //[Command]
     public void nextTurn(turn currentTurn) // proceeds to the next players turn
     {
         Debug.Log("next turn called");
-        if(playersPieces == null) {
-            findPieces();
-        }
+        
         currentDirection = direction.neither;
         currentDirectionSign = directionSign.neither;
         allPiecesNonMovable();
@@ -271,8 +277,8 @@ public class GameManager : NetworkBehaviour {
             playersPieces = squarePieces;
             markMovable();
         }
+        
     }
-
     public void undomove(GameObject toHere) 
     {
         
@@ -286,7 +292,12 @@ public class GameManager : NetworkBehaviour {
         foreach(GameObject piece in playersPieces)
         {
             DragPiece thisPiece = piece.GetComponent<DragPiece>();
-            if (piece.transform.childCount == 0)
+            if (thisPiece.inStack)
+            {
+                Debug.Log("found Some Pieces In the Stack");
+                thisPiece.isMovable = true;
+            }
+            else if (piece.transform.childCount == 0)
             {
                 Debug.Log("foundSomePieces");
                 markStackMovableDown(piece.transform);
@@ -298,7 +309,8 @@ public class GameManager : NetworkBehaviour {
     void markStackMovableDown(Transform top)
     {
         top.GetComponent<DragPiece>().isMovable = true;
-        if(top.parent.GetComponent<DragPiece>() != null)
+        
+        if(top.parent != null && top.parent.GetComponent<DragPiece>() != null)
         {
             markStackMovableDown(top.parent);
         }
@@ -315,7 +327,11 @@ public class GameManager : NetworkBehaviour {
 
     void allPiecesNonMovable()
     {
-        foreach(DragPiece data in squareData)
+        if (squareData == null || roundData == null)
+        {
+            findPieces();
+        }
+        foreach (DragPiece data in squareData)
         {
             data.isMovable = false;
         }

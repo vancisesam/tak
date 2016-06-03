@@ -28,7 +28,7 @@ public class DragPiece : NetworkBehaviour
 
     void OnMouseDown()
     {
-          
+        
         gameManager.selectPiece(gameObject);
         
     }
