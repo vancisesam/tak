@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
     public Material selectedMaterial;
     private Material materialOfSelected;
     public GameObject turnText;
-
+    public Text errorText;
     public enum direction { vertical, horizontal, neither};
     private enum directionSign { positive, negative, neither};
     public direction currentDirection = direction.neither;
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour {
 
         if (selected != null)       //if I have a piece selected
         {
-            Undo.RecordObject(selected, "Undomove");
+            //Undo.RecordObject(selected, "Undomove");
             DragPiece temp = selected.GetComponent<DragPiece>();
             
             if (toHere.transform.childCount == 0 && isEligibleTarget(toHere))   //if there isn't already a piece on top of toHere and is a valid placement
@@ -118,13 +118,13 @@ public class GameManager : MonoBehaviour {
     {
         Vector3 targetPos = toHere.transform.position;
         Vector3 selectedPos = selected.transform.position;
-        Debug.Log("checking eligiblity");
+        //Debug.Log("checking eligiblity");
         if (toHere.tag != "boardSquare")
         { //check if you are moving onto another piece
             DragPiece toHereData = toHere.GetComponent<DragPiece>();
             if (toHereData.isCap)
             {
-                Debug.Log("cannot move onto a capStone");
+                setErrorText("You cannot move onto a Cap Stone");
                 return false;
             }
             else if (toHereData.isWall)   //cannot move onto a wall
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour {
                     
                     return true;
                 }
-                Debug.Log("cannot move onto a wall");
+                setErrorText("You cannot move onto a wall");
                 return false;
             }
         }
@@ -144,7 +144,7 @@ public class GameManager : MonoBehaviour {
             Debug.Log("selected is from stack");
             if (toHere.tag != "boardSquare")
             {
-                Debug.Log("moving from stack to piece is not allowed");
+                setErrorText("Moving a piece from stack on top of another piece is not allowed");
                 return false;   //a move from the stack to another piece is not allowed
             }
             return true;
@@ -154,12 +154,12 @@ public class GameManager : MonoBehaviour {
         {
             if (targetPos.z == selectedPos.z)   //the target and the selected are in the same position
             {
-                Debug.Log("Cannot Move to the same position");
+                setErrorText("Cannot move to the same position");
                 return false;
             }
             else if (currentDirection == direction.horizontal)
             {
-                Debug.Log("You can only move horizontally");
+                setErrorText("You can only move horizontally");
                 return false;
             }
             else if (targetPos.z == selectedPos.z + 1.0f || targetPos.z == selectedPos.z - 1.0f)
@@ -177,14 +177,14 @@ public class GameManager : MonoBehaviour {
                 }               
                 
             }
-            Debug.Log("can only move one square at a time");
+            setErrorText("You can only move one square at a time");
             return false;
         }
         else if (targetPos.z == selectedPos.z)
         {
             if (currentDirection == direction.vertical)
             {
-                Debug.Log("You can only move vertically");
+                setErrorText("You can only move vertically");
                 return false;
             }
             else if (targetPos.x == selectedPos.x + 1.0f || targetPos.x == selectedPos.x - 1.0f)
@@ -201,11 +201,11 @@ public class GameManager : MonoBehaviour {
                         return (targetPos.x == selectedPos.x + 1.0f);
                 }
             }
-            Debug.Log("can only move one square at a time");
+            setErrorText("You can only move one square at a time");
             return false;
 
         }
-        Debug.Log("cannot move diagonally");
+        setErrorText("You cannot move diagonally");
         return false;
     }
     public void deselectPiece()
@@ -233,14 +233,14 @@ public class GameManager : MonoBehaviour {
         {
             currentTurn = turn.square;
             turnText.GetComponent<Text>().text = "Square Turn";
-            playersPieces = roundPieces;
+            playersPieces = squarePieces;
             markMovable();
         }
         else if(currentTurn == turn.square)
         {
             currentTurn = turn.round;
             turnText.GetComponent<Text>().text = "Round Turn";
-            playersPieces = squarePieces;
+            playersPieces = roundPieces;
             markMovable();
         }
     }
@@ -295,5 +295,17 @@ public class GameManager : MonoBehaviour {
         {
             data.isMovable = false;
         }
+    }
+
+    void setErrorText(string asdf)
+    {
+        errorText.text = asdf;
+        StartCoroutine(clearErrorText());
+    }
+
+    IEnumerator clearErrorText()
+    {
+        yield return new WaitForSeconds(2.2f);
+        errorText.text = "";
     }
 }
