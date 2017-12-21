@@ -1,0 +1,9 @@
+{
+"TOTAL_MEMORY": 268435456,
+"dataUrl": "tak.data.unityweb",
+"asmCodeUrl": "tak.asm.code.unityweb",
+"asmMemoryUrl": "tak.asm.memory.unityweb",
+"asmFrameworkUrl": "tak.asm.framework.unityweb",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#474747"
+}
